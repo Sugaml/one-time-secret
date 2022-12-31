@@ -2,7 +2,6 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 
 	"github.com/berrybytes/simplesecrets/docs"
@@ -37,7 +36,9 @@ func main() {
 	docs.SwaggerInfo.Schemes = []string{"http", "https"}
 
 	config, err := util.LoadEnvConfig()
-	fmt.Println(config)
+	if err != nil {
+		log.Fatal("Cannot connect to db", err)
+	}
 	conn, err := sql.Open(config.DBDriver, config.DBSource)
 	if err != nil {
 		log.Fatal("Cannot connect to db", err)
