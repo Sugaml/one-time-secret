@@ -1,0 +1,55 @@
+basePath: /v2
+definitions:
+  db.Secret:
+    properties:
+      content:
+        type: string
+      created_at:
+        type: string
+      creator:
+        type: string
+      hashpassword:
+        type: string
+      id:
+        type: integer
+      isview:
+        type: boolean
+    type: object
+host: petstore.swagger.io:8080
+info:
+  contact:
+    email: info.onetimesecret.com
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample server Petstore server.
+  termsOfService: http://swagger.io/terms/
+  version: "1.0"
+paths:
+  /secret/{id}:
+    get:
+      consumes:
+      - application/json
+      description: get string by ID
+      parameters:
+      - description: Account ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/db.Secret'
+        "400":
+          description: Bad Request
+        "404":
+          description: Not Found
+        "500":
+          description: Internal Server Error
+      summary: Show an account
+      tags:
+      - accounts
+swagger: "2.0"

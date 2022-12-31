@@ -3,10 +3,13 @@ package api
 import (
 	"fmt"
 
+	_ "github.com/berrybytes/simplesecrets/docs"
 	"github.com/berrybytes/simplesecrets/internal/controller/token"
 	db "github.com/berrybytes/simplesecrets/internal/model/sqlc"
 	"github.com/berrybytes/simplesecrets/util"
 	"github.com/gin-gonic/gin"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type Server struct {
@@ -33,6 +36,8 @@ func NewServer(config util.Config, store db.Store) (*Server, error) {
 }
 func (server *Server) setupRouter() {
 	router := gin.Default()
+
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	router.POST("/user", server.createUser)
 	router.POST("/users/login", server.loginUser)
 

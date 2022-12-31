@@ -55,6 +55,18 @@ type getSecretRequest struct {
 	Isview bool
 }
 
+// ShowAccount godoc
+// @Summary      Show an account
+// @Description  get string by ID
+// @Tags         accounts
+// @Accept       json
+// @Produce      json
+// @Param        id   path      int  true  "Account ID"
+// @Success      200  {object}  db.Secret
+// @Failure      400
+// @Failure      404
+// @Failure      500
+// @Router       /secret/{id} [get]
 func (server *Server) getSecret(ctx *gin.Context) {
 	var req getSecretRequest
 	if err := ctx.ShouldBindUri(&req); err != nil {
