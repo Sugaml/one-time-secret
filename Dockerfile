@@ -1,5 +1,5 @@
-FROM golang:1.16-alpine
+FROM golang:1.18-alpine
 WORKDIR /app
 COPY . /app
-RUN go build -o /app  cmd/server/main.go
+RUN go build -o /app main.go
 CMD ["/app/main"]
