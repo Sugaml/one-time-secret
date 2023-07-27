@@ -1,4 +1,4 @@
-name: Go CI
+name: OnetimeSecretWorkflow
 
 on:
   push:
@@ -37,7 +37,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.x
+          go-version: 1.18
 
       - name: Run go fmt
         run: go fmt $(go list ./... | grep -v /vendor/)
@@ -58,7 +58,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.x
+          go-version: 1.18
 
       - name: Create output directory
         run: mkdir -p __bin__/${{ env.GITHUB_REPOSITORY }}
@@ -75,7 +75,7 @@ jobs:
   build_image:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
-    needs: build
+    needs: [lint, test, build]  # Ensure lint, test, and build jobs pass before starting this job
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
