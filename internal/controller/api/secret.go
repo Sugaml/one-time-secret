@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/berrybytes/simplesecrets/internal/controller/token"
 	db "github.com/berrybytes/simplesecrets/internal/model/sqlc"
@@ -47,8 +48,15 @@ func (server *Server) createOneTimeSecret(ctx *gin.Context) {
 		return
 	}
 	Cont = util.RandomString(60)
-	url := fmt.Sprintf("localhost:3000/secrets/%d/%s", secret.ID, Cont)
-	ctx.JSON(http.StatusOK, url)
+	baseURL := os.Getenv("BASE_URL")
+	if baseURL == "" {
+		ctx.JSON(http.StatusUnprocessableEntity, errorResponse(errors.New("required baseURL")))
+		return
+	}
+	url := fmt.Sprintf("%s/one-time-secret/%d/%s", baseURL, secret.ID, Cont)
+	ctx.JSON(http.StatusOK, map[string]interface{}{
+		"url": url,
+	})
 }
 
 func (server *Server) createSecret(ctx *gin.Context) {
@@ -108,12 +116,6 @@ func (server *Server) getOneTimeSecret(ctx *gin.Context) {
 			return
 		}
 		ctx.JSON(http.StatusInternalServerError, errorResponse(err))
-		return
-	}
-	authPayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
-	if secret.Creator != authPayload.Username {
-		err := errors.New("account doesn't belong to the authenticated user")
-		ctx.JSON(http.StatusUnauthorized, errorResponse(err))
 		return
 	}
 	if !secret.Isview {
