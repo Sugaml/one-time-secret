@@ -38,6 +38,8 @@ func (server *Server) setupRouter() {
 	router := gin.Default()
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	router.POST("/", server.heathCheck)
+	router.POST("/healthcheck", server.heathCheck)
 	router.POST("/user", server.createUser)
 	router.POST("/users/login", server.loginUser)
 	router.POST("/one-time-secret", server.createOneTimeSecret)
