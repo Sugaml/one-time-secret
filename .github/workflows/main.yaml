@@ -3,7 +3,7 @@ name: OnetimeSecretWorkflow
 on:
   push:
     branches:
-      - main
+      - master
       - develop
 
 jobs:
@@ -72,7 +72,7 @@ jobs:
           name: binary-artifact
           path: __bin__/${{ env.GITHUB_REPOSITORY }}
 
-  push:
+  docker-build-push:
     needs: [lint, test, build]
     runs-on: ubuntu-latest
     steps:
