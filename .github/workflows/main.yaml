@@ -1,66 +1,96 @@
-name: ci
+name: Go CI
 
 on:
   push:
     branches:
-      - "master"
-      - "develop"
+      - main
+      - develop
 
 jobs:
-  # lint:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     -
-  #       name: Checkout
-  #       uses: actions/checkout@v3
-  #     -
-  #       name: Install Go
-  #       uses: actions/setup-go@v2
-  #       with:
-  #         go-version: 1.18
-  #     -
-  #       name: Lint Golang code
-  #       run: |
-  #         curl -sfL https://install.goreleaser.com/github.com/golangci/golangci-lint.sh | sh -s v1.42.1
-  #         ./bin/golangci-lint run --timeout 10m0s ./...
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    container:
+      image: golangci/golangci-lint:latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Cache Go dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.GOPATH }}/pkg/mod
+          key: go-cache-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            go-cache-${{ env.GOPATH }}/pkg/mod
+
+      - name: Run linting
+        run: golangci-lint run -v
 
   test:
-    # needs: lint
+    name: Test
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Checkout
-        uses: actions/checkout@v3
-      -
-        name: Install Go
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.18
-      -
-        name: Run Golang Tests
-        run: go test -v -coverprofile=cover.out ./... && go tool cover -func=cover.out
+          go-version: 1.x
+
+      - name: Run go fmt
+        run: go fmt $(go list ./... | grep -v /vendor/)
+
+      - name: Run go vet
+        run: go vet $(go list ./... | grep -v /vendor/)
+
+      - name: Run tests
+        run: go test -race $(go list ./... | grep -v /vendor/)
 
   build:
-    needs: test
+    name: Build
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Checkout
-        uses: actions/checkout@v3
-      -
-        name: Login to Docker Hub
-        uses: docker/login-action@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      -
-        name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-      -
-        name: Build and push
-        uses: docker/build-push-action@v4
+          go-version: 1.x
+
+      - name: Create output directory
+        run: mkdir -p __bin__/${{ env.GITHUB_REPOSITORY }}
+
+      - name: Build binary
+        run: go build -o __bin__/${{ env.GITHUB_REPOSITORY }} ./...
+
+      - name: Archive artifact
+        uses: actions/upload-artifact@v2
         with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/simple-go:${{ github.sha }}
+          name: binary-artifact
+          path: __bin__/${{ env.GITHUB_REPOSITORY }}
+
+  build_image:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Log in to Docker Hub
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build and Push Docker Image
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            tag="latest"
+            echo "Running on default branch 'main': tag = 'latest'"
+          else
+            tag="${{ github.ref_slug }}"
+            echo "Running on branch '${{ github.ref }}': tag = $tag"
+          fi
+          docker build --pull -t ${{ secrets.DOCKER_REGISTRY }}/${{ github.repository }}:${tag} .
+          docker push ${{ secrets.DOCKER_REGISTRY }}/${{ github.repository }}:${tag}
