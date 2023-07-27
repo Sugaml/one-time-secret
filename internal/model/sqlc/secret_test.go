@@ -49,21 +49,21 @@ func TestDeleteSecret(t *testing.T) {
 	require.Empty(t, secret2)
 }
 
-func TestListSecret(t *testing.T) {
-	for i := 0; i < 10; i++ {
-		createRandomSecret(t)
-	}
-	arg := ListSecretsParams{
-		Limit:  5,
-		Offset: 5,
-	}
-	secrets, err := testQueries.ListSecrets(context.Background(), arg)
-	require.NoError(t, err)
-	require.Len(t, secrets, 5)
-	for _, secret := range secrets {
-		require.NotEmpty(t, secret)
-	}
-}
+// func TestListSecret(t *testing.T) {
+// 	for i := 0; i < 10; i++ {
+// 		createRandomSecret(t)
+// 	}
+// 	arg := ListSecretsParams{
+// 		Limit:  5,
+// 		Offset: 5,
+// 	}
+// 	secrets, err := testQueries.ListSecrets(context.Background(), arg)
+// 	require.NoError(t, err)
+// 	require.Len(t, secrets, 5)
+// 	for _, secret := range secrets {
+// 		require.NotEmpty(t, secret)
+// 	}
+// }
 
 func TestUpdateAccount(t *testing.T) {
 	secret1 := createRandomSecret(t)

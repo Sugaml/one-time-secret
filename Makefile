@@ -1,26 +1,26 @@
 postgres:
-	docker run --name postgres --network bank-network -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres:alpine
+	docker run --name postgres --network basic-network -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres:alpine
 
 createdb:
 	docker exec -it postgres createdb --username=root --owner=root simple
 
 dropdb:
-	docker exec -it postgres dropdb simple
+	docker exec -it postgres dropdb onetimesecret
 
 migratecreate:
 	migrate create -ext sql -dir ./migrations -seq add_users
 
 migrateup:
-	migrate  -path ./migrations -database "postgresql://root:secret@localhost:5432/simple?sslmode=disable"  -verbose up 
+	migrate  -source ./migrations -database "postgresql://root:secret@localhost:5432/onetimesecret?sslmode=disable"  -verbose up 
 
 migrateup1:
-	migrate -path ./migrations -database "postgresql://root:secret@localhost:5432/simple?sslmode=disable" -verbose up 1
+	migrate -path ./migrations -database "postgresql://root:secret@localhost:5432/onetimesecret?sslmode=disable" -verbose up 1
 
 migratedown:
-	migrate -path ./migrations -database "postgresql://root:secret@localhost:5432/simple?sslmode=disable" -verbose down
+	migrate -path ./migrations -database "postgresql://root:secret@localhost:5432/onetimesecret?sslmode=disable" -verbose down
 
 migratedown1:
-	migrate -path internal/model/migration -database "postgresql://root:secret@localhost:5432/simple?sslmode=disable" -verbose down 1
+	migrate -path internal/model/migration -database "postgresql://root:secret@localhost:5432/onetimesecret?sslmode=disable" -verbose down 1
 
 sqlc:
 	sqlc generate

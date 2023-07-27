@@ -40,6 +40,8 @@ func (server *Server) setupRouter() {
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	router.POST("/user", server.createUser)
 	router.POST("/users/login", server.loginUser)
+	router.POST("/one-time-secret", server.createOneTimeSecret)
+	router.GET("/one-time-secret/:id/:content", server.getOneTimeSecret)
 
 	authRoutes := router.Group("/").Use(authMiddleware(server.tokenMaker))
 	authRoutes.POST("/secrets", server.createSecret)

@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 
 	"github.com/berrybytes/simplesecrets/docs"
@@ -48,7 +49,7 @@ func main() {
 	if err != nil {
 		log.Fatal("Cannot create server : ", err)
 	}
-	err = server.Start(":3000")
+	err = server.Start(fmt.Sprintf(":%s", config.PORT))
 	if err != nil {
 		log.Fatal("cannot start server: ", err)
 	}
