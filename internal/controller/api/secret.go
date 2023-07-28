@@ -133,7 +133,6 @@ func (server *Server) getOneTimeSecret(ctx *gin.Context) {
 	} else {
 		ctx.JSON(http.StatusOK, "You have already view")
 	}
-
 }
 
 type getSecretRequest struct {

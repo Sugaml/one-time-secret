@@ -1,23 +1,26 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: backend-dpl
+  name: onetimesecret
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: backend
+      app: onetimesecret
   template:
     metadata:
       labels:
-        app: backend
+        app: onetimesecret
     spec:
       containers:
-        - name: backend-container
-          image: sugamdocker35/docker-test:v4
+        - name: onetimesecret
+          image: sugamdocker35/secret-manager:latest
           resources:
             limits:
               memory: "128Mi"
               cpu: "500m"
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
           ports:
-            - containerPort: 3000
+            - containerPort: 8080
