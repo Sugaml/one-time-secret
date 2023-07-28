@@ -36,6 +36,7 @@ func NewServer(config util.Config, store db.Store) (*Server, error) {
 }
 func (server *Server) setupRouter() {
 	router := gin.Default()
+	router.Use(CORSMiddleware())
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	router.GET("/", server.heathCheck)
