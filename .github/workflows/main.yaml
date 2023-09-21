@@ -95,4 +95,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/onetime-secrets:${{ github.sha }}
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/onetime-secret:${{ github.sha }}
