@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
@@ -331,11 +330,9 @@ func randomUser(t *testing.T) (user db.User, password string) {
 }
 
 func requireBodyMatchUser(t *testing.T, body *bytes.Buffer, user db.User) {
-	data, err := ioutil.ReadAll(body)
-	require.NoError(t, err)
-
+	data := body.Bytes()
 	var gotUser db.User
-	err = json.Unmarshal(data, &gotUser)
+	err := json.Unmarshal(data, &gotUser)
 
 	require.NoError(t, err)
 	require.Equal(t, user.Username, gotUser.Username)

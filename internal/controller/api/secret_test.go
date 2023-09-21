@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -419,10 +418,9 @@ func TestListSecretsAPI(t *testing.T) {
 }
 
 func requireBodyMatchSecret(t *testing.T, body *bytes.Buffer, secret string) {
-	data, err := ioutil.ReadAll(body)
-	require.NoError(t, err)
+	data := body.Bytes()
 	var gotSecret interface{}
-	err = json.Unmarshal(data, &gotSecret)
+	err := json.Unmarshal(data, &gotSecret)
 	require.NoError(t, err)
 	require.Equal(t, secret, gotSecret)
 }
@@ -435,11 +433,9 @@ func randomSecrets(creator string) db.Secret {
 	}
 }
 func requireBodyMatchSecrets(t *testing.T, body *bytes.Buffer, secrets []db.Secret) {
-	data, err := ioutil.ReadAll(body)
-	require.NoError(t, err)
-
+	data := body.Bytes()
 	var gotAccounts []db.Secret
-	err = json.Unmarshal(data, &gotAccounts)
+	err := json.Unmarshal(data, &gotAccounts)
 	require.NoError(t, err)
 	require.Equal(t, secrets, gotAccounts)
 }
