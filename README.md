@@ -12,3 +12,10 @@ To install Go Migrate
     $ apt-get install -y migrate
 
 ```
+
+Build Docker Image
+
+```
+    docker build -t onetime-secret:v1 .
+
+```
