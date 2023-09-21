@@ -4,8 +4,7 @@ Helm charts are a combination of Kubernetes YAML manifest templates and helm-spe
 
 ## Create Chart 
 ```
-    helm create one-time-secret
-
+    helm create onetime-secret
 ```
 
 ## Validate the Helm Chart
@@ -17,7 +16,7 @@ Helm charts are a combination of Kubernetes YAML manifest templates and helm-spe
 
 ## Deploy the Helm Chart
 ```
-    helm install api-service one-time-secret
+    helm install api-service onetime-secret
 
 ```
 
@@ -25,7 +24,7 @@ Helm charts are a combination of Kubernetes YAML manifest templates and helm-spe
 
 ```
 
-    helm install frontend one-time-secret --values env/prod-values.yaml
+    helm install onetime-secret onetime-secret --values env/prod-values.yaml
 
 ```
 
@@ -39,8 +38,8 @@ Helm charts are a combination of Kubernetes YAML manifest templates and helm-spe
 ## Helm Upgrade & Rollback
 ```
 
-    helm upgrade api-service igamaing
-    helm rollback api-service
+    helm upgrade onetime-secret onetime-secret
+    helm rollback onetime-secret
     helm rollback <release-name> <revision-number>
 
 ```
@@ -48,12 +47,12 @@ Helm charts are a combination of Kubernetes YAML manifest templates and helm-spe
 ### Uninstall The Helm Release
 ```
 
-    helm uninstall api-service
+    helm uninstall onetime-secret
 
 ```
 ### Package the chart and deploy it to Github, S3, or any other platform
 ```
-    helm package api-service
+    helm package onetime-secret
 
 ```
 
@@ -75,7 +74,7 @@ We can use the following commands to debug the helm charts and templates.
 
 ```
 
-    helm diff revision one-time-secret 1 2
+    helm diff revision onetime-secret 1 2
 
 ```
 
