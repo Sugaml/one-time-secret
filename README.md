@@ -1,7 +1,7 @@
 # secret-management
 one time secret
 
-
+## Ubuntu
 To install Go Migrate
 
 ```
@@ -12,3 +12,11 @@ To install Go Migrate
     $ apt-get install -y migrate
 
 ```
+
+## Mac OS
+```bash
+brew update
+brew install golang-migrate
+migrate --version
+```
+
